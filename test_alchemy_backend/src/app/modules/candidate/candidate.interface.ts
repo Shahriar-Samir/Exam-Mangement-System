@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
 export type TCandidate = {
-  uid: string;
+  id: string;
   examSet: [Types.ObjectId];
-};
+}
+;

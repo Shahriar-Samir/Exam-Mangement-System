@@ -1,13 +1,14 @@
 import catchAsync from "../../util/catchAsync";
+import golbalRespnseHandler from "../../util/globalResponseHandeler";
 import questionPaperService from "./questionPaper.service";
 
 const getAllQuestionPaper = catchAsync(async (req, res) => {
-  const result = await questionPaperService.getAllQuestionPaper();
-  res.status(200).json({
-    message: "All question papers retrieved successfully",
+  const result = await questionPaperService.getAllQuestionPapers();
+  golbalRespnseHandler(res, {
+    message: "all question papers retrieved successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 
@@ -15,78 +16,89 @@ const getSingleQuestionPaper = catchAsync(async (req, res) => {
   const result = await questionPaperService.getSingleQuestionPaper(
     req.params.qid
   );
-  res.status(200).json({
-    message: "Single question paper retrieved successfully",
+  golbalRespnseHandler(res, {
+    message: "single question paper retrieved successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 
 const getQuestionPapersOfExaminee = catchAsync(async (req, res) => {
   const result = await questionPaperService.getQuestionPapersOfExaminee(
-    req.params.examineeId
+    req.user.id
   );
-  res.status(200).json({
-    message: "Single question paper retrieved successfully",
+  golbalRespnseHandler(res, {
+    message: "single question paper retrieved successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
+  });
+});
+
+const getAllQuestionPapersForCandidate = catchAsync(async (req, res) => {
+  const result = await questionPaperService.getAllQuestionPapers();
+  golbalRespnseHandler(res, {
+    message: "all question paper retrieved successfully",
+    success: true,
+    statusCode: 200,
+    data: result,
+  });
+});
+
+const getAllQuestionPapersForExaminer = catchAsync(async (req, res) => {
+  const result = await questionPaperService.getAllQuestionPapers();
+  golbalRespnseHandler(res, {
+    message: "all question papers retrieved successfully",
+    success: true,
+    statusCode: 200,
+    data: result,
   });
 });
 
 const createQuestionPaper = catchAsync(async (req, res) => {
   const user = req.user;
- 
 
   const result = await questionPaperService.createQuestionPaper(
     user.id,
     req.body
   );
-  res.status(200).json({
-    message: "Question paper created successfully",
+  golbalRespnseHandler(res, {
+    message: "question paper created successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 
 const addMCQIntoQuestionPaper = catchAsync(async (req, res) => {
   const { id } = req.user;
 
-  if (id !== req.query.examineeId) {
-    throw new Error(
-      "You are not authorized to add new mcq to this question paper"
-    );
-  }
   const result = await questionPaperService.addMCQIntoQuestionPaper(
+    id,
     req.query.qid as string,
     req.body
   );
-  res.status(200).json({
-    message: "Question paper updated successfully",
+  golbalRespnseHandler(res, {
+    message: "question paper updated successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 const removeMCQFromQuestionPaper = catchAsync(async (req, res) => {
   const { id } = req.user;
-
-  if (id !== req.query.examineeId) {
-    throw new Error(
-      "You are not authorized to remove a mcq from this question paper"
-    );
-  }
   const result = await questionPaperService.removeMCQFromQuestionPaper(
+    id,
     req.query.qid as string,
     req.query.mcqId as string
   );
-  res.status(200).json({
+
+  golbalRespnseHandler(res, {
     message: "MCQ removed from question paper successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 
@@ -95,11 +107,11 @@ const updateQuestionPaper = catchAsync(async (req, res) => {
     req.params.qid,
     req.body
   );
-  res.status(200).json({
-    message: "Question paper updated successfully",
+  golbalRespnseHandler(res, {
+    message: "question paper updated successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 
@@ -112,17 +124,19 @@ const deleteQuestionPaper = catchAsync(async (req, res) => {
   const result = await questionPaperService.deleteQuestionPaper(
     req.query.qid as string
   );
-  res.status(200).json({
-    message: "Question paper deleted successfully",
+  golbalRespnseHandler(res, {
+    message: "question paper deleted successfully",
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: result,
   });
 });
 
 const questionPaperController = {
   getAllQuestionPaper,
   getSingleQuestionPaper,
+  getAllQuestionPapersForCandidate,
+  getAllQuestionPapersForExaminer,
   getQuestionPapersOfExaminee,
   createQuestionPaper,
   updateQuestionPaper,

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 export type TQuestionPaper = {
   id: string;
-  domain: string;
+  subject: string;
   examineeId: string;
   duration: number;
   totalMarks?: number;
@@ -15,6 +15,6 @@ export type TMCQ = {
   mcqId: string;
   question: string;
   options: string[];
-  correctAns: 0 | 1 | 2 | 3;
+  correctAns: 1 | 2 | 3 | 4;
   mark: number;
 };

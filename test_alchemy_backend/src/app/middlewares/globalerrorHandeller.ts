@@ -1,25 +1,56 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler } from 'express';
+import { ZodError } from 'zod';
+import config from '../config';
+import reformZodError from '../error/zodError';
+import mongoseErrorHandeller from '../error/mongooseErrorHandeller';
+import { TErrorSource } from '../constents';
+import dublicateErrorHandellerr from '../error/dublicateError';
 
-const globalErrorHandler = (
-    error: any,
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    // Set default status code and message
-    const statusCode = error.statusCode || 500
-    const status = error.status || "error"
-    const message = error.message || "Something went wrong!";
+const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  // setting default value
 
-    // Log the error for debugging purposes (optional in production)
-    console.error("Global Error:", error);
+  let statusCode = err.statusCode || 500;
+  let message = err.message || 'something Went Wrong';
+  let errorSource: TErrorSource = [
+    {
+      path: '',
+      message: 'something went wrong',
+    },
+  ];
 
-    // Send error response
-    res.status(statusCode).json({
-        status,
-        message,
-        error // Optionally include additional error details
-    });
+  if (err instanceof ZodError) {
+    const handaleZoderror = reformZodError(err);
+    statusCode = 400;
+    message = 'validation error';
+    errorSource = handaleZoderror;
+  } else if (err?.name === 'ValidationError') {
+    const mongoseErrorHandellerr = mongoseErrorHandeller(err);
+    statusCode = mongoseErrorHandellerr?.statusCode;
+    errorSource = mongoseErrorHandellerr?.errorSource;
+    message = mongoseErrorHandellerr.message;
+  } else if (err?.errorResponse?.code === 11000) {
+    const dublicateErrorHandeller = dublicateErrorHandellerr(err);
+    statusCode = dublicateErrorHandeller.statuscode;
+    message = dublicateErrorHandeller.message;
+    errorSource = dublicateErrorHandeller.errorSource;
+  } else if (err instanceof Error) {
+    statusCode = 500;
+    message = err.message;
+    errorSource = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  }
+
+  res.status(statusCode).json({
+    success: false,
+    message: message,
+    errorSource,
+    // theError:err,
+    stack: config.nodeEnv === 'development' ? err.stack : null,
+  });
 };
 
 export default globalErrorHandler;

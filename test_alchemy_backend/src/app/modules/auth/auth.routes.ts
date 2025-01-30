@@ -8,10 +8,11 @@ import { userRole } from "../../constents";
 const authRouter = express.Router();
 
 authRouter.post("/logIn", validator(logInValidator), authController.logIn);
-authRouter.get(
+authRouter.post(
   "/logOut",
   auth(userRole.examinee, userRole.candidate, userRole.admin),
   authController.logOut
 );
+authRouter.get("/refreshToken", authController.refreshToken);
 
 export default authRouter;

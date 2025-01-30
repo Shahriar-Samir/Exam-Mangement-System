@@ -10,7 +10,7 @@ const TMCQSchema = z.object({
     .array(z.string())
     .nonempty({ message: "MCQ options must not be empty" }) // Added message for empty options
     .min(2, { message: "MCQ options must have at least two options" }),
-  correctAns: z.number().refine((val) => [0, 1, 2, 3].includes(val)),
+  correctAns: z.number().refine((val) => [1, 2, 3, 4].includes(val)),
   mark: z.number().min(1, "Mark must be greater than 0"),
 });
 
@@ -18,7 +18,7 @@ const TMCQSchema = z.object({
 export const TQuestionPaperSchema = z.object({
   body: z.object({
     id: z.string().optional(),
-    domain: z.string().nonempty({ message: "Domain must not be empty" }), // Added validation for non-empty domain
+    subject: z.string().nonempty({ message: "Domain must not be empty" }), // Added validation for non-empty domain
     examineeId: z.string().optional(),
     duration: z.number().min(1, "Duration must be a positive number"),
     totalMarks: z.number().optional(),

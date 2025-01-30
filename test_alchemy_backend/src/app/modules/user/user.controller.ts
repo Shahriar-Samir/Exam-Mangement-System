@@ -1,20 +1,22 @@
 import catchAsync from "../../util/catchAsync";
+import golbalRespnseHandler from "../../util/globalResponseHandeler";
 import userServices from "./user.service";
 
 const createUser = catchAsync(async (req, res) => {
-  const file = req.file;
+  // const file = req.file;
   const payload = req.body;
-  const result = await userServices.createUser(payload, file);
-  res.status(200).json({
-    message: "User created successfully",
+  const result = await userServices.createUser(payload);
+  golbalRespnseHandler(res, {
+    message: `${req.body.userType} created successfully`,
     success: true,
-    status: 200,
-    body: result,
+    statusCode: 200,
+    data: req.body.userType === "examinee" ? result : null,
   });
 });
 
 const updateUser = catchAsync(async (req, res) => {
-  const result = await userServices.updateUser(req.params.id, req.body);
+  const uid = req.user.id;
+  const result = await userServices.updateUser(uid, req.body);
   res.status(200).json({
     message: "User updated successfully",
     success: true,

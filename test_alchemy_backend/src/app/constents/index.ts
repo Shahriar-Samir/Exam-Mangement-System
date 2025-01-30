@@ -1,5 +1,9 @@
 export type TUserRole = "candidate" | "examinee" | "admin";
 export type TIdFor= "candidate" | "examinee" | "admin"|"questionPaper"|"exam";
+export type TErrorSource = {
+    path: string | number;
+    message: string;
+  }[];
 
 
 export const userRole = {

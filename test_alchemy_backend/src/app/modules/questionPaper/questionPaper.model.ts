@@ -22,7 +22,7 @@ const TMCQSchema: Schema = new Schema<TMCQ>({
   },
   correctAns: {
     type: Number,
-    enum: [0, 1, 2, 3],
+    enum: [1, 2, 3, 4],
     required: true,
   },
   mark: {
@@ -33,7 +33,7 @@ const TMCQSchema: Schema = new Schema<TMCQ>({
 
 const questionPaperSchema = new Schema<TQuestionPaper>(
   {
-    domain: {
+    subject: {
       type: String,
       required: true,
     },

@@ -3,23 +3,23 @@ import validator from "../../util/validator";
 import userController from "./user.controller";
 import userValidation from "./user.validation";
 import auth from "../../middlewares/auth";
-import { userRole } from "../../constents";
-import { upload } from "../../util/uploadImgToCloudinary";
+import { idFor, userRole } from "../../constents";
+// import { upload } from "../../util/uploadImgToCloudinary";
 // import auth from "../../middlewares/auth";
 // import { userRole } from "../../constents";
 const userRoutes = express.Router();
 
 // get users
 userRoutes.get("/getAllUser", userController.getAllUser);
-userRoutes.get("/getSingleUser/:id", userController.getSingleUser);
+userRoutes.get("/userProfile/:id", userController.getSingleUser);
 
 // crerate user
 userRoutes.post(
   "/createExaminee",
-  upload.single("file"),
+  // upload.single("file"),
   (req, res, next) => {
-    req.body = JSON.parse(req.body.data);
-    req.body.userType = "examinee";
+    // req.body = JSON.parse(req.body.data);
+    req.body.userType = idFor.examinee;
     next();
   },
   auth(userRole.admin),
@@ -29,10 +29,10 @@ userRoutes.post(
 
 userRoutes.post(
   "/createCandidate",
-  upload.single("file"),
+  // upload.single("file"),
   (req, res, next) => {
-    req.body = JSON.parse(req.body.data);
-    req.body.userType = "candidate";
+    // req.body = JSON.parse(req.body.data);
+    req.body.userType = idFor.candidate;
     next();
   },
   validator(userValidation.userValidationSchema),
@@ -41,7 +41,7 @@ userRoutes.post(
 
 // update user
 userRoutes.patch(
-  "/updateUser/:id",
+  "/updateUser",
   auth(userRole.examinee, userRole.candidate),
   validator(userValidation.userUpdateValidationSchema),
   userController.updateUser

@@ -6,7 +6,6 @@ export type TUser = {
   firstName: string;
   lastName: string;
   img: string;
-  domain: string;
   isLoggedIn: boolean;
   isDeleted: boolean;
   loggedOutTime: string;
@@ -19,5 +18,4 @@ export type TUserUpdateData = {
   firstName: string;
   lastName: string;
   img: string;
-  domain: string;
 };

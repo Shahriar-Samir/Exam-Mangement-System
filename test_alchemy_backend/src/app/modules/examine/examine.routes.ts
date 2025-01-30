@@ -2,7 +2,6 @@ import express from "express";
 import {
   addQuestionPaper,
   deleteQuestionPaper,
-  getQuestionPaper,
   updateQuestionPaper,
 } from "./examinee.controller";
 

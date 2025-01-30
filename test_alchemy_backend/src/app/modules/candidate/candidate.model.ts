@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import { TCandidate } from "./candidate.interface";
 
 const candidateSchema = new Schema<TCandidate>({
-  uid: {
+  id: {
     type: String,
   },
   examSet: {
@@ -10,6 +10,8 @@ const candidateSchema = new Schema<TCandidate>({
     ref: "Exam",
     required: true,
   },
+},{
+  timestamps:true
 });
 
 export const CandidateModel = model("Candidate", candidateSchema);

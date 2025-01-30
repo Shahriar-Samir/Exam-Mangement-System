@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import createToken from "./auth.utill";
+import  { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import { UserModel } from "../user/user.model";
 import authUtill from "./auth.utill";
@@ -62,8 +61,61 @@ const logOut = async (authorizationToken: string) => {
   return findUserById;
 };
 
+const refreshToken = async (refreshToken: string) => {
+  // const decoded = jwt.verify(
+  //   refreshToken,
+  //   config.jwtRefreshTokenSecret as string,
+  // );
+
+  const decoded= authUtill.decodeRefreshToken(refreshToken)
+
+  if (!decoded) {
+    throw Error('tocan decodaing Failed');
+  }
+
+  const { id, iat, role } = decoded as JwtPayload;
+
+  const findUser = await UserModel.findOne({
+    id: id,
+    isDelited: false,
+  });
+
+  if (!findUser) {
+    throw Error('Unauthorised User or forbitten Access');
+  }
+
+  // console.log(findUser)
+  if (findUser.loggedOutTime && iat) {
+
+    const logOutTimedAt = findUser.loggedOutTime
+      ? new Date(findUser.loggedOutTime).getTime() / 1000
+      : null;
+
+    if (
+      (logOutTimedAt && logOutTimedAt > iat)
+    ) {
+      throw Error('Unauthorized User: Try logging in again');
+    }
+  }
+
+  const tokenizeData = {
+    id: findUser.id,
+    role: role,
+  };
+  const approvalToken = authUtill.createToken(
+    tokenizeData,
+    config.jwt_token_secret,
+    config.token_expairsIn
+  );
+
+  return {
+    approvalToken,
+  };
+};
+
 const authSercvices = {
   logIn,
   logOut,
+  refreshToken
 };
 export default authSercvices;

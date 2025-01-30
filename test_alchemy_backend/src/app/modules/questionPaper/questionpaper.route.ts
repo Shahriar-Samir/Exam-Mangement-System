@@ -12,11 +12,26 @@ router.get(
   auth(userRole.candidate),
   questionPaperController.getAllQuestionPaper
 );
+router.get(
+  "/getSingleQuestionPaper/:qid",
+  auth(userRole.candidate, userRole.examinee),
+  questionPaperController.getSingleQuestionPaper
+);
 
 router.get(
-  "/examinee/:examineeId",
+  "/allQuestionPapersOfExaminee",
   auth(userRole.examinee),
   questionPaperController.getQuestionPapersOfExaminee
+);
+router.get(
+  "/getAllQuestionPapersForExaminer",
+  auth(userRole.examinee),
+  questionPaperController.getAllQuestionPapersForExaminer
+);
+router.get(
+  "/getAllQuestionPapersForCandidate",
+  auth(userRole.candidate),
+  questionPaperController.getAllQuestionPapersForCandidate
 );
 
 router.get("/single/:qid", questionPaperController.getSingleQuestionPaper);
@@ -38,7 +53,7 @@ router.patch(
   auth("examinee"),
   questionPaperController.addMCQIntoQuestionPaper
 );
-router.patch(
+router.delete(
   "/removeMCQ",
   auth("examinee"),
   questionPaperController.removeMCQFromQuestionPaper
